@@ -44,6 +44,10 @@ static const char sccsid[] = "@(#)telnetd.c	8.4 (Berkeley) 5/30/95";
 
 #ifdef __GNO__
 #include "libtelnet/getaddrinfo.h"
+/* GNO doesn't have struct sockaddr_storage; just use "struct sockaddr" 
+ * (which is really struct osockaddr). */
+#define sockaddr_storage sockaddr
+#define ss_family sa_family
 #endif
 
 #include <err.h>
@@ -418,7 +422,7 @@ main(int argc, char *argv[])
 }  /* end of main */
 
 	void
-usage()
+usage(void)
 {
 	fprintf(stderr, "usage: telnetd");
 #ifdef	AUTHENTICATION

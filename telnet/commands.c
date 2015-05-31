@@ -432,8 +432,7 @@ send_docmd(char *name)
 }
 
 static int
-send_dontcmd(name)
-    char *name;
+send_dontcmd(char *name)
 {
     return(send_tncmd(send_dont, "dont", name));
 }
@@ -1386,7 +1385,7 @@ shell(int argc, char **argv __unused)
 	    _exit(1);
 	}
     default:
-	    (void)wait((int *)0);	/* Wait for the shell to complete */
+	    (void)wait(NULL);	/* Wait for the shell to complete */
 
 	    if (TerminalWindowSize(&newrows, &newcols) && connected &&
 		(err_ || ((oldrows != newrows) || (oldcols != newcols)))) {
@@ -2101,7 +2100,12 @@ static const char *
 sockaddr_ntop(struct sockaddr *sa)
 {
     void *addr;
+#if !defined(__GNO__) || defined(INET6)
     static char addrbuf[INET6_ADDRSTRLEN];
+#else
+    /* Since we don't have IPv6, the IPv4 size is sufficient. */
+    static char addrbuf[16];
+#endif
 
     switch (sa->sa_family) {
     case AF_INET:
@@ -2341,7 +2345,12 @@ tn(int argc, char **argv)
         int gni_err = 1;
 
 	if (doaddrlookup)
-	    gni_err = getnameinfo(res->ai_addr, res->ai_addr->sa_len,
+	    gni_err = getnameinfo(res->ai_addr,
+#ifndef __GNO__
+				  res->ai_addr->sa_len,
+#else
+				  sizeof(struct sockaddr),
+#endif
 				  _hostname, sizeof(_hostname) - 1, NULL, 0,
 				  NI_NAMEREQD);
 	if (gni_err != 0)
@@ -2690,7 +2699,7 @@ command(int top, const char *tbuf, int cnt)
  * Help command.
  */
 static int
-help(int argc, char *argv[])
+help(int argc, char **argv)
 {
 	Command *c;
 

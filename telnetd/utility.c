@@ -68,7 +68,7 @@ static const char sccsid[] = "@(#)utility.c	8.4 (Berkeley) 5/30/95";
  */
 
     void
-ttloop()
+ttloop(void)
 {
 
     DIAG(TD_REPORT, output_data("td: ttloop\r\n"));

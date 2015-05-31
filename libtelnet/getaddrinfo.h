@@ -50,6 +50,9 @@
 #ifdef __GNO__
 typedef int socklen_t;
 typedef unsigned short in_port_t;
+/* GNO calls actually expect an older form of "struct sockaddr", 
+ * different from the "struct sockaddr" defined in the headers. */
+# define sockaddr __SOCKADDR
 #endif
 
 /********************************************************************/
