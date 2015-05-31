@@ -55,12 +55,18 @@
 #endif
 
 #include <sys/socket.h>
+#ifndef SHUT_RDWR
+# define SHUT_RDWR 2
+#endif
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #ifndef	FILIO_H
+# if !defined(USE_TERMIO)
+#  define USE_OLD_TTY
+# endif
 #include <sys/ioctl.h>
 #else
 #include <sys/filio.h>

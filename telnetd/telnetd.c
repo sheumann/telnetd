@@ -322,7 +322,7 @@ main(int argc, char *argv[])
 	}
 
 	argc -= optind;
-	argv += optind;
+	argv = argv + optind;
 
 	if (debug) {
 	    int s, ns, foo, error;
@@ -1174,7 +1174,7 @@ telnet(int f, int p, char *host)
 }  /* end of telnet */
 
 #ifndef	TCSIG
-# ifdef	TIOCSIG
+# if defined(TIOCSIG) && !defined(__GNO__)
 #  define TCSIG TIOCSIG
 # endif
 #endif

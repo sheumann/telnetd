@@ -46,3 +46,7 @@ struct termspeeds {
 };
 
 extern struct termspeeds termspeeds[];
+
+#ifdef __GNO__
+typedef unsigned long uint32_t;
+#endif

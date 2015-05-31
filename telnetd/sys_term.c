@@ -40,7 +40,9 @@ static const char sccsid[] = "@(#)sys_term.c	8.4+1 (Berkeley) 5/30/95";
 
 
 #include <sys/types.h>
-#include <sys/tty.h>
+#ifdef USE_TERMIO
+# include <sys/tty.h>
+#endif
 #include <stdlib.h>
 
 #include "telnetd.h"

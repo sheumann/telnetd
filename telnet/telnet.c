@@ -47,7 +47,6 @@ static const char sccsid[] = "@(#)telnet.c	8.4 (Berkeley) 5/30/95";
  */
 
 #include <ctype.h>
-#include <curses.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -62,6 +61,7 @@ static const char sccsid[] = "@(#)telnet.c	8.4 (Berkeley) 5/30/95";
 #include "general.h"
 
 #ifdef USE_TERMIO
+# include <curses.h>
 # include <term.h>
 #else
 # include <termcap.h>

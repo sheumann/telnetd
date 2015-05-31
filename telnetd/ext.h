@@ -174,7 +174,7 @@ extern void
 	willoption(int),
 	wontoption(int);
 
-int	output_data(const char *, ...) __printflike(1, 2);
+int	output_data(const char *, ...) /*__printflike(1, 2)*/;
 void	output_datalen(const char *, int);
 void	startslave(char *, int, char *);
 

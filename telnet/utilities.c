@@ -185,8 +185,13 @@ printoption(const char *direction, int cmd, int option)
 		    fprintf(NetTrace, "%s IAC %d", direction, option);
 	} else {
 		const char *fmt;
-		fmt = (cmd == WILL) ? "WILL" : (cmd == WONT) ? "WONT" :
-			(cmd == DO) ? "DO" : (cmd == DONT) ? "DONT" : 0;
+		switch (cmd) {
+		case WILL:	fmt = "WILL";	break;
+		case WONT:	fmt = "WONT";	break;
+		case DO:	fmt = "DO";	break;
+		case DONT:	fmt = "DONT";	break;
+		default:	fmt = 0;	break;
+		}
 		if (fmt) {
 		    fprintf(NetTrace, "%s %s ", direction, fmt);
 		    if (TELOPT_OK(option))

@@ -40,7 +40,9 @@ static const char sccsid[] = "@(#)commands.c	8.4 (Berkeley) 5/30/95";
 
 
 #include <sys/param.h>
-#include <sys/un.h>
+#ifndef __GNO__
+# include <sys/un.h>
+#endif
 #include <sys/file.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -77,7 +79,9 @@ static const char sccsid[] = "@(#)commands.c	8.4 (Berkeley) 5/30/95";
 
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
-#include <netinet/ip6.h>
+#ifdef INET6
+# include <netinet/ip6.h>
+#endif
 
 #ifndef       MAXHOSTNAMELEN
 #define       MAXHOSTNAMELEN 256
@@ -1345,7 +1349,7 @@ suspend(void)
 }
 
 static int
-shell(int argc, char *argv[] __unused)
+shell(int argc, char **argv __unused)
 {
     long oldrows, oldcols, newrows, newcols, err_;
 
@@ -2100,9 +2104,11 @@ sockaddr_ntop(struct sockaddr *sa)
     case AF_INET:
 	addr = &((struct sockaddr_in *)sa)->sin_addr;
 	break;
+#ifndef __GNO__
     case AF_UNIX:
 	addr = &((struct sockaddr_un *)sa)->sun_path;
 	break;
+#endif
 #ifdef INET6
     case AF_INET6:
 	addr = &((struct sockaddr_in6 *)sa)->sin6_addr;
@@ -2169,7 +2175,7 @@ switch_af(struct addrinfo **aip)
 #endif
 
 int
-tn(int argc, char *argv[])
+tn(int argc, char **argv)
 {
     char *srp = 0;
     int proto, opt;
@@ -2256,6 +2262,7 @@ tn(int argc, char *argv[])
 	src_res0 = src_res;
     }
     if (hostp[0] == '/') {
+#ifndef __GNO__
 	struct sockaddr_un su;
 	
 	if (strlen(hostp) >= sizeof(su.sun_path)) {
@@ -2279,6 +2286,10 @@ tn(int argc, char *argv[])
 	    goto fail;
 	}
 	goto af_unix;
+#else
+	fprintf(stderr, "UNIX domain sockets are not supported on GNO\n");
+	goto fail;
+#endif
     } else if (hostp[0] == '@' || hostp[0] == '!') {
 	if (
 #ifdef INET6

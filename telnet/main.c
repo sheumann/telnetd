@@ -346,7 +346,7 @@ main(int argc, char *argv[])
 		autologin = (rlogin == _POSIX_VDISABLE) ? 0 : 1;
 
 	argc -= optind;
-	argv += optind;
+	argv = argv + optind;
 
 	if (argc) {
 		char *args[9], **argp = args;
