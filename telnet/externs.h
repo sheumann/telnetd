@@ -45,14 +45,11 @@
 #define BSD 43
 #endif
 
-#ifndef	USE_TERMIO
-# if BSD > 43 || defined(SYSV_TERMIO)
-#  define USE_TERMIO
-# endif
-#endif
-
 #include <stdio.h>
 #include <setjmp.h>
+#if !defined(USE_TERMIO)
+# define USE_OLD_TTY
+#endif
 #include <sys/ioctl.h>
 #include <errno.h>
 #ifdef	USE_TERMIO
@@ -63,7 +60,7 @@
 #endif
 #if defined(NO_CC_T) || !defined(USE_TERMIO)
 # if !defined(USE_TERMIO)
-typedef char cc_t;
+typedef unsigned char cc_t;
 # else
 typedef unsigned char cc_t;
 # endif
@@ -214,7 +211,7 @@ extern int (*decrypt_input)(int);
 #define	set_his_want_state_dont		set_my_want_state_wont
 #define	set_his_want_state_wont		set_my_want_state_dont
 
-#if	defined(USE_TERMIO)
+#if	defined(USE_TERMIO) || defined(__STDC__)
 #define	SIG_FUNC_RET	void
 #else
 #define	SIG_FUNC_RET	int

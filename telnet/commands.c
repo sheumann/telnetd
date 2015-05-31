@@ -56,7 +56,7 @@ __FBSDID("$FreeBSD$");
 #include <string.h>
 #include <unistd.h>
 
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <arpa/inet.h>
 
 #include "general.h"
@@ -69,10 +69,10 @@ __FBSDID("$FreeBSD$");
 #include "misc.h"
 
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 #endif
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
 
 #include <netinet/in_systm.h>

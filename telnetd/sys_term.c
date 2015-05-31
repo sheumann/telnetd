@@ -41,16 +41,13 @@ __FBSDID("$FreeBSD$");
 
 #include <sys/types.h>
 #include <sys/tty.h>
-#include <libutil.h>
 #include <stdlib.h>
 
 #include "telnetd.h"
 #include "pathnames.h"
-#include "types.h"
-#include "baud.h"
 
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 #endif
 
 int cleanopen(char *);
@@ -126,7 +123,6 @@ struct termios termbuf, termbuf2;	/* pty control structure */
 #endif	/* USE_TERMIO */
 
 #include <sys/types.h>
-#include <libutil.h>
 
 int cleanopen(char *);
 void scrub_env(void);
@@ -809,7 +805,11 @@ getptyslave(void)
 # ifdef	LINEMODE
 	waslm = tty_linemode();
 # endif
+# ifdef USE_TERMIO
 	erase = termbuf.c_cc[VERASE];
+# else
+	erase = termbuf.sg.sg_erase;
+# endif
 
 	/*
 	 * Make sure that we don't have a controlling tty, and
@@ -855,8 +855,13 @@ getptyslave(void)
 	 */
 	tty_rspeed((def_rspeed > 0) ? def_rspeed : 9600);
 	tty_tspeed((def_tspeed > 0) ? def_tspeed : 9600);
-	if (erase)
+	if (erase) {
+# ifdef USE_TERMIO
 		termbuf.c_cc[VERASE] = erase;
+# else
+		termbuf.sg.sg_erase = erase;
+# endif
+	}
 # ifdef	LINEMODE
 	if (waslm)
 		tty_setlinemode(1);

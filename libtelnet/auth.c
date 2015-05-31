@@ -70,7 +70,7 @@ __FBSDID("$FreeBSD$");
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 
 #include "encrypt.h"
 #include "auth.h"

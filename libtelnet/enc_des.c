@@ -41,7 +41,7 @@ __FBSDID("$FreeBSD$");
 
 #ifdef	ENCRYPTION
 # ifdef	AUTHENTICATION
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <openssl/des.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -46,7 +46,7 @@ __FBSDID("$FreeBSD$");
 #include <errno.h>
 #include <stdlib.h>
 
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <unistd.h>
 
 #include "ring.h"

@@ -68,7 +68,7 @@
 
 #include <netinet/in.h>
 
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 
 #include <stdio.h>
 #ifdef	__STDC__

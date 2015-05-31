@@ -44,20 +44,19 @@ __FBSDID("$FreeBSD$");
 
 #include <sys/mman.h>
 #include <err.h>
-#include <libutil.h>
 #include <paths.h>
 #include <termcap.h>
 
 #include <arpa/inet.h>
 
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 int	auth_level = 0;
 #endif
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
-#include <libtelnet/misc.h>
+#include "libtelnet/misc.h"
 
 char	remote_hostname[MAXHOSTNAMELEN];
 size_t	utmp_len = sizeof(remote_hostname) - 1;
@@ -658,10 +657,13 @@ terminaltypeok(char *s)
  * Get a pty, scan input lines.
  */
 void
-doit(struct sockaddr *who)
+doit(struct sockaddr *who_)
 {
 	int err_; /* XXX */
+	char *host = NULL;
+	struct hostent *hp;
 	int ptynum;
+	struct sockaddr_in *who;
 
 	/*
 	 * Find an available pty to use.
@@ -686,30 +688,51 @@ doit(struct sockaddr *who)
 #endif
 
 	/* get name of connected client */
-	if (realhostname_sa(remote_hostname, sizeof(remote_hostname) - 1,
-	    who, who->sa_len) == HOSTNAME_INVALIDADDR && registerd_host_only)
+	if (who_->sa_family != AF_INET)
+		fatal(net, "Non-IPv4 addresses are not supported");
+	who = (struct sockaddr_in *)who_;
+	hp = gethostbyaddr((char *)&who->sin_addr, sizeof (struct in_addr),
+		who->sin_family);
+
+	if (hp == NULL && registerd_host_only) {
 		fatal(net, "Couldn't resolve your address into a host name.\r\n\
-	Please contact your net administrator");
-	remote_hostname[sizeof(remote_hostname) - 1] = '\0';
+	 Please contact your net administrator");
+	} else if (hp &&
+	    (strlen(hp->h_name) <= (unsigned int)((utmp_len < 0) ? -utmp_len
+								 : utmp_len))) {
+		strncpy(remote_hostname, hp->h_name,
+			sizeof(remote_hostname)-1);
+		hp = gethostbyname(remote_hostname);
+		if (hp == NULL)
+			host = inet_ntoa(who->sin_addr); 
+		else for (; ; hp->h_addr_list++) {
+			if (hp->h_addr_list[0] == NULL) {
+				/* End of list - ditch it */
+				host = inet_ntoa(who->sin_addr);
+				break;
+			}
+			if (!bcmp(hp->h_addr_list[0], (caddr_t)&who->sin_addr,
+			    sizeof(who->sin_addr))) {
+				host = hp->h_name;
+				break;          /* OK! */
+			}
+		}
+	} else {
+		host = inet_ntoa(who->sin_addr);
+	}
+	/*
+	 * We must make a copy because Kerberos is probably going
+	 * to also do a gethost* and overwrite the static data...
+	 */
+	strncpy(remote_hostname, host, sizeof(remote_hostname)-1);
+	remote_hostname[sizeof(remote_hostname)-1] = 0;
+	host = remote_hostname;
 
-	if (!isdigit(remote_hostname[0]) && strlen(remote_hostname) > utmp_len)
-		err_ = getnameinfo(who, who->sa_len, remote_hostname,
-				  sizeof(remote_hostname), NULL, 0,
-				  NI_NUMERICHOST);
-		/* XXX: do 'err_' check */
-
-	(void) gethostname(host_name, sizeof(host_name) - 1);
-	host_name[sizeof(host_name) - 1] = '\0';
+	(void) gethostname(host_name, sizeof (host_name));
 	hostname = host_name;
 
-#ifdef	AUTHENTICATION
-#ifdef	ENCRYPTION
-/* The above #ifdefs should actually be "or"'ed, not "and"'ed.
- * This is a byproduct of needing "#ifdef" and not "#if defined()"
- * for unifdef. XXX MarkM
- */
-	auth_encrypt_init(hostname, remote_hostname, "TELNETD", 1);
-#endif
+#if	defined(AUTHENTICATION) || defined(ENCRYPTION)
+	auth_encrypt_init(hostname, host, "TELNETD", 1);
 #endif
 
 	init_env();
@@ -720,7 +743,7 @@ doit(struct sockaddr *who)
 	level = getterminaltype(user_name);
 	setenv("TERM", terminaltype ? terminaltype : "network", 1);
 
-	telnet(net, pty, remote_hostname);	/* begin server process */
+	telnet(net, pty, host);		/* begin server process */
 
 	/*NOTREACHED*/
 }  /* end of doit */

@@ -61,7 +61,7 @@ static const char sccsid[] = "@(#)kerberos.c	8.3 (Berkeley) 5/30/95";
 
 #ifdef	KRB4
 #include <sys/types.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <openssl/des.h>	/* BSD wont include this in krb.h, so we do it here */
 #include <krb.h>
 #include <stdio.h>

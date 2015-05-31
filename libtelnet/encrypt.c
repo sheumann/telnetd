@@ -65,7 +65,7 @@ static const char sccsid[] = "@(#)encrypt.c	8.2 (Berkeley) 5/30/95";
 
 #include <sys/types.h>
 #define	ENCRYPT_NAMES
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

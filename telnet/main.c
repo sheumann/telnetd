@@ -50,10 +50,10 @@ __FBSDID("$FreeBSD$");
 #include "defines.h"
 
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 #endif
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
 
 /* These values need to be the same as defined in libtelnet/kerberos5.c */

@@ -42,10 +42,10 @@ __FBSDID("$FreeBSD$");
 #include <stdarg.h>
 #include "telnetd.h"
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 #endif
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
 
 unsigned char	doopt[] = { IAC, DO, '%', 'c', 0 };

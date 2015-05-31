@@ -42,7 +42,7 @@ __FBSDID("$FreeBSD$");
 #include "telnetd.h"
 
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
 
 /*

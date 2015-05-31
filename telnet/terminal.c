@@ -39,7 +39,7 @@ static const char sccsid[] = "@(#)terminal.c	8.2 (Berkeley) 2/16/95";
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <sys/types.h>
 
 #include <stdlib.h>
@@ -50,7 +50,7 @@ __FBSDID("$FreeBSD$");
 #include "types.h"
 
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
 
 Ring		ttyoring, ttyiring;

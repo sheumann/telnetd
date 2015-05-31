@@ -76,7 +76,7 @@ static char sccsid[] = "@(#)krb4encpwd.c	8.3 (Berkeley) 5/30/95";
 
 #include <sys/types.h>
 #include <openssl/des.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <krb.h>
 #include <pwd.h>
 #include <stdio.h>

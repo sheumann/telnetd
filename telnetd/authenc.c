@@ -44,7 +44,7 @@ __FBSDID("$FreeBSD$");
 /* Above "#ifdef"s actually "or"'ed together. XXX MarkM
  */
 #include "telnetd.h"
-#include <libtelnet/misc.h>
+#include "libtelnet/misc.h"
 
 int
 net_write(unsigned char *str, int len)

@@ -50,10 +50,9 @@ __FBSDID("$FreeBSD$");
 #include <curses.h>
 #include <signal.h>
 #include <stdlib.h>
-#include <term.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 
 #include "ring.h"
 
@@ -62,13 +61,19 @@ __FBSDID("$FreeBSD$");
 #include "types.h"
 #include "general.h"
 
+#ifdef USE_TERMIO
+# include <term.h>
+#else
+# include <termcap.h>
+#endif
+
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 #endif
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
-#include <libtelnet/misc.h>
+#include "libtelnet/misc.h"
 
 #define	strip(x) ((my_want_state_is_wont(TELOPT_BINARY)) ? ((x)&0x7f) : (x))
 

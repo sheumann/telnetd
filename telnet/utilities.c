@@ -42,7 +42,7 @@ __FBSDID("$FreeBSD$");
 #define	TELOPTS
 #define	TELCMDS
 #define	SLC_NAMES
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -61,10 +61,10 @@ __FBSDID("$FreeBSD$");
 #include "externs.h"
 
 #ifdef	AUTHENTICATION
-#include <libtelnet/auth.h>
+#include "libtelnet/auth.h"
 #endif
 #ifdef	ENCRYPTION
-#include <libtelnet/encrypt.h>
+#include "libtelnet/encrypt.h"
 #endif
 
 FILE	*NetTrace = 0;		/* Not in bss, since needs to stay */

@@ -35,7 +35,7 @@ __FBSDID("$FreeBSD$");
 #ifdef	SRA
 #ifdef	ENCRYPTION
 #include <sys/types.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>

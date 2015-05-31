@@ -75,7 +75,7 @@ static char sccsid[] = "@(#)rsaencpwd.c	8.3 (Berkeley) 5/30/95";
  */
 
 #include <sys/types.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>

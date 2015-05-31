@@ -53,7 +53,7 @@ __FBSDID("$FreeBSD$");
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 
 #include "ring.h"
 #include "fdset.h"

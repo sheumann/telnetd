@@ -57,7 +57,7 @@ __FBSDID("$FreeBSD$");
 
 #ifdef	KRB5
 
-#include <arpa/telnet.h>
+#include "arpa/telnet.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
