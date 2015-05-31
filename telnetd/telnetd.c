@@ -42,6 +42,10 @@ static const char sccsid[] = "@(#)telnetd.c	8.4 (Berkeley) 5/30/95";
 #include "telnetd.h"
 #include "pathnames.h"
 
+#ifdef __GNO__
+#include "libtelnet/getaddrinfo.h"
+#endif
+
 #include <err.h>
 #include <paths.h>
 #include <termcap.h>

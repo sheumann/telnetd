@@ -10,7 +10,8 @@ LIBTELNET_SRCS = \
   libtelnet/misc.c \
   libtelnet/read_password.c \
   libtelnet/rsaencpwd.c \
-  libtelnet/sra.c
+  libtelnet/sra.c \
+  libtelnet/getaddrinfo.c
 # libtelnet/pk.c 
 
 TELNET_SRCS = \
@@ -44,6 +45,7 @@ HEADERS = \
   libtelnet/misc-proto.h \
   libtelnet/misc.h \
   libtelnet/pk.h \
+  libtelnet/getaddrinfo.h \
   telnet/baud.h \
   telnet/defines.h \
   telnet/externs.h \
