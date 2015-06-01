@@ -67,6 +67,9 @@ typedef unsigned char cc_t;
 #endif
 
 #include <string.h>
+#ifdef __GNO__
+# include "libtelnet/strlcpy.h"
+#endif
 
 #if defined(IPSEC)
 #include <netipsec/ipsec.h>

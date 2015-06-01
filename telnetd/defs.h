@@ -96,6 +96,9 @@
 #else
 #include <strings.h>
 #endif
+#ifdef __GNO__
+# include "libtelnet/strlcpy.h"
+#endif
 
 #ifndef	USE_TERMIO
 #include <sgtty.h>
