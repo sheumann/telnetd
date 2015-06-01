@@ -1,24 +1,12 @@
 LIBTELNET_SRCS = \
-  libtelnet/auth.c \
-  libtelnet/enc_des.c \
-  libtelnet/encrypt.c \
   libtelnet/genget.c \
   libtelnet/getent.c \
-  libtelnet/kerberos.c \
-  libtelnet/kerberos5.c \
-  libtelnet/krb4encpwd.c \
-  libtelnet/misc.c \
-  libtelnet/read_password.c \
-  libtelnet/rsaencpwd.c \
-  libtelnet/sra.c \
   libtelnet/getaddrinfo.c \
   libtelnet/strlcpy.c \
   libtelnet/vasprintf.c \
   libtelnet/inet_ntop.c
-# libtelnet/pk.c 
 
 TELNET_SRCS = \
-  telnet/authenc.c \
   telnet/commands.c \
   telnet/main.c \
   telnet/network.c \
@@ -29,7 +17,6 @@ TELNET_SRCS = \
   telnet/utilities.c
 
 TELNETD_SRCS = \
-  telnetd/authenc.c \
   telnetd/global.c \
   telnetd/slc.c \
   telnetd/state.c \
@@ -40,14 +27,8 @@ TELNETD_SRCS = \
 
 HEADERS = \
   arpa/telnet.h \
-  libtelnet/auth-proto.h \
-  libtelnet/auth.h \
-  libtelnet/enc-proto.h \
-  libtelnet/encrypt.h \
-  libtelnet/key-proto.h \
   libtelnet/misc-proto.h \
   libtelnet/misc.h \
-  libtelnet/pk.h \
   libtelnet/getaddrinfo.h \
   libtelnet/strlcpy.h \
   libtelnet/vasprintf.h \
