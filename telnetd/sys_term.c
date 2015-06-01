@@ -921,6 +921,20 @@ cleanopen(char *li)
 	return(t);
 }
 
+#ifdef __ORCAC__
+# pragma databank 1
+#endif
+static void 
+slaveproc(char *host, int autologin, char *autoname)
+{
+	getptyslave();
+	start_login(host, autologin, autoname);
+	/*NOTREACHED*/
+}
+#ifdef __ORCAC__
+# pragma databank 0
+#endif
+
 /*
  * startslave(host)
  *
@@ -944,14 +958,24 @@ startslave(char *host, int autologin, char *autoname)
 	}
 #endif
 
-
-	if ((i = fork()) < 0)
+#ifndef __GNO__
+	i = fork();
+#else
+	i = fork2(slaveproc, 1024, 0, "telnetd pty slave proc", 
+    		   (sizeof(host) + sizeof(autologin) + sizeof(autoname))/2, 
+    		   host, autologin, autoname);
+#endif
+	if (i < 0)
 		fatalperror(net, "fork");
 	if (i) {
+#ifdef __GNO__
+		do {
+			errno = 0;
+			(void)wait(NULL);
+		} while (errno == EINTR);
+#endif
 	} else {
-		getptyslave();
-		start_login(host, autologin, autoname);
-		/*NOTREACHED*/
+		slaveproc(host, autologin, autoname);
 	}
 }
 

@@ -1350,42 +1350,69 @@ suspend(void)
     return 1;
 }
 
+#ifdef __ORCAC__
+# pragma databank 1
+#endif
+static void 
+child_shell(int argc)
+{
+    /*
+     * Fire up the shell in the child.
+     */
+    const char *shellp, *shellname;
+
+    shellp = getenv("SHELL");
+    if (shellp == NULL) {
+#ifndef __GNO__
+	shellp = "/bin/sh";
+#else
+	shellp = "/bin/gsh";
+#endif
+    }
+    if ((shellname = strrchr(shellp, '/')) == 0)
+	shellname = shellp;
+    else
+	shellname++;
+    if (argc > 1)
+	execl(shellp, shellname, "-c", &saveline[1], (char *)0);
+    else
+	execl(shellp, shellname, (char *)0);
+    perror("Execl");
+#ifndef __GNO__
+    _exit(1);
+#endif
+}
+#ifdef __ORCAC__
+# pragma databank 0
+#endif
+
 static int
 shell(int argc, char **argv __unused)
 {
     long oldrows, oldcols, newrows, newcols, err_;
+    int result;
 
     setcommandmode();
 
     err_ = (TerminalWindowSize(&oldrows, &oldcols) == 0) ? 1 : 0;
-    switch(vfork()) {
+#ifndef __GNO__
+    result = vfork();
+#else
+    result = fork2(child_shell, 1024, 0, "telnet subshell", 
+    		   sizeof(argc)/2, argc);
+#endif
+    switch(result) {
     case -1:
 	perror("Fork failed\n");
 	break;
 
     case 0:
-	{
-	    /*
-	     * Fire up the shell in the child.
-	     */
-	    const char *shellp, *shellname;
-
-	    shellp = getenv("SHELL");
-	    if (shellp == NULL)
-		shellp = "/bin/sh";
-	    if ((shellname = strrchr(shellp, '/')) == 0)
-		shellname = shellp;
-	    else
-		shellname++;
-	    if (argc > 1)
-		execl(shellp, shellname, "-c", &saveline[1], (char *)0);
-	    else
-		execl(shellp, shellname, (char *)0);
-	    perror("Execl");
-	    _exit(1);
-	}
+	child_shell(argc);
     default:
-	    (void)wait(NULL);	/* Wait for the shell to complete */
+	    do {
+	    	errno = 0;
+	    	(void)wait(NULL);	/* Wait for the shell to complete */
+	    } while (errno == EINTR);
 
 	    if (TerminalWindowSize(&newrows, &newcols) && connected &&
 		(err_ || ((oldrows != newrows) || (oldcols != newcols)))) {
