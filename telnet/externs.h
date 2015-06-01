@@ -220,6 +220,12 @@ extern int (*decrypt_input)(int);
 #define	SIG_FUNC_RET	int
 #endif
 
+#ifndef __GNO__
+# define SIG_FUNC_PARMS(x) (x)
+#else
+# define SIG_FUNC_PARMS(x) (x, int sigcode __unused)
+#endif
+
 #ifdef	SIGINFO
 extern SIG_FUNC_RET
     ayt_status(void);

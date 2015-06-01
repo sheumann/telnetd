@@ -112,16 +112,17 @@ static fd_set *ibitsp, *obitsp, *xbitsp;
 int fdsn;
 
 #ifdef	SIGINT
-static SIG_FUNC_RET intr(int);
+static SIG_FUNC_RET intr SIG_FUNC_PARMS(int);
 #endif	/* SIGINT */
 #ifdef	SIGQUIT
-static SIG_FUNC_RET intr2(int);
+static SIG_FUNC_RET intr2 SIG_FUNC_PARMS(int);
 #endif	/* SIGQUIT */
 #ifdef	SIGTSTP
-static SIG_FUNC_RET susp(int);
+static SIG_FUNC_RET susp SIG_FUNC_PARMS(int);
 #endif	/* SIGTSTP */
 #ifdef	SIGINFO
-static SIG_FUNC_RET ayt(int);
+static SIG_FUNC_RET ayt SIG_FUNC_PARMS(int);
+static SIG_FUNC_RET ayt_status_wrapper SIG_FUNC_PARMS(int);
 #endif
 
 void
@@ -643,7 +644,7 @@ TerminalNewMode(int f)
 #endif
     } else {
 #ifdef	SIGINFO
-	(void) signal(SIGINFO, (void (*)(int))ayt_status);
+	(void) signal(SIGINFO, ayt_status_wrapper);
 #endif
 #ifdef  SIGINT
 	(void) signal(SIGINT, SIG_DFL);
@@ -746,7 +747,7 @@ NetNonblockingIO(int fd, int onoff)
 
 /* ARGSUSED */
 SIG_FUNC_RET
-intr(int sig __unused)
+intr SIG_FUNC_PARMS(int sig __unused)
 {
     if (localchars) {
 	intp();
@@ -758,7 +759,7 @@ intr(int sig __unused)
 
 /* ARGSUSED */
 SIG_FUNC_RET
-intr2(int sig __unused)
+intr2 SIG_FUNC_PARMS(int sig __unused)
 {
     if (localchars) {
 #ifdef	KLUDGELINEMODE
@@ -774,7 +775,7 @@ intr2(int sig __unused)
 #ifdef	SIGTSTP
 /* ARGSUSED */
 SIG_FUNC_RET
-susp(int sig __unused)
+susp SIG_FUNC_PARMS(int sig __unused)
 {
     if ((rlogin != _POSIX_VDISABLE) && rlogin_susp())
 	return;
@@ -786,7 +787,7 @@ susp(int sig __unused)
 #ifdef	SIGWINCH
 /* ARGSUSED */
 static SIG_FUNC_RET
-sendwin(int sig __unused)
+sendwin SIG_FUNC_PARMS(int sig __unused)
 {
     if (connected) {
 	sendnaws();
@@ -797,7 +798,7 @@ sendwin(int sig __unused)
 #ifdef	SIGINFO
 /* ARGSUSED */
 SIG_FUNC_RET
-ayt(int sig __unused)
+ayt SIG_FUNC_PARMS(int sig __unused)
 {
     if (connected)
 	sendayt();
@@ -806,7 +807,15 @@ ayt(int sig __unused)
 }
 #endif
 
-
+#ifdef	SIGINFO
+SIG_FUNC_RET
+ayt_status_wrapper SIG_FUNC_PARMS(int sig __unused)
+{
+    ayt_status();
+}
+#endif
+
+
 void
 sys_telnet_init(void)
 {
