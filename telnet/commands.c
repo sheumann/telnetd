@@ -53,6 +53,7 @@ static const char sccsid[] = "@(#)commands.c	8.4 (Berkeley) 5/30/95";
 #include <netdb.h>
 #ifdef __GNO__
 # include "libtelnet/getaddrinfo.h"
+# include "libtelnet/inet_ntop.h"
 #endif
 #include <pwd.h>
 #include <signal.h>

@@ -13,7 +13,8 @@ LIBTELNET_SRCS = \
   libtelnet/sra.c \
   libtelnet/getaddrinfo.c \
   libtelnet/strlcpy.c \
-  libtelnet/vasprintf.c
+  libtelnet/vasprintf.c \
+  libtelnet/inet_ntop.c
 # libtelnet/pk.c 
 
 TELNET_SRCS = \
@@ -48,6 +49,9 @@ HEADERS = \
   libtelnet/misc.h \
   libtelnet/pk.h \
   libtelnet/getaddrinfo.h \
+  libtelnet/strlcpy.h \
+  libtelnet/vasprintf.h \
+  libtelnet/inet_ntop.h \
   telnet/baud.h \
   telnet/defines.h \
   telnet/externs.h \
