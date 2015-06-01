@@ -18,6 +18,7 @@ TELNET_SRCS = $(TELNET_SRCS_A) $(TELNET_SRCS_B)
 
 TELNETD_SRCS = \
   libtelnet/getent.c \
+  libtelnet/posix_openpt.c \
   libtelnet/vasprintf.c \
   telnetd/global.c \
   telnetd/slc.c \
@@ -35,6 +36,7 @@ HEADERS = \
   libtelnet/strlcpy.h \
   libtelnet/vasprintf.h \
   libtelnet/inet_ntop.h \
+  libtelnet/posix_openpt.h \
   telnet/baud.h \
   telnet/defines.h \
   telnet/externs.h \

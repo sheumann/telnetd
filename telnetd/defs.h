@@ -96,9 +96,11 @@
 #else
 #include <strings.h>
 #endif
+
 #ifdef __GNO__
 # include "libtelnet/strlcpy.h"
 # include "libtelnet/vasprintf.h"
+# include "libtelnet/posix_openpt.h"
 #endif
 
 #ifndef	USE_TERMIO
