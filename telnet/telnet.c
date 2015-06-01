@@ -1217,7 +1217,7 @@ slcstate(void)
 }
 
 void
-slc_mode_export(void)
+slc_mode_export(int val __unused)
 {
     slc_mode = SLC_EXPORT;
     if (my_state_is_will(TELOPT_LINEMODE))
@@ -2282,7 +2282,7 @@ xmitEC(void)
 }
 
 int
-dosynch(char *ch __unused)
+dosynch(char *ch __unused, char *b __unused)
 {
     netclear();			/* clear the path to the network */
     NETADD(IAC);
@@ -2295,7 +2295,7 @@ dosynch(char *ch __unused)
 int want_status_response = 0;
 
 int
-get_status(char *ch __unused)
+get_status(char *ch __unused, char *b __unused)
 {
     unsigned char tmp[16];
     unsigned char *cp;
@@ -2330,7 +2330,7 @@ intp(void)
 	doflush();
     }
     if (autosynch) {
-	dosynch(NULL);
+	dosynch(NULL, NULL);
     }
 }
 
@@ -2344,7 +2344,7 @@ sendbrk(void)
 	doflush();
     }
     if (autosynch) {
-	dosynch(NULL);
+	dosynch(NULL, NULL);
     }
 }
 
@@ -2358,7 +2358,7 @@ sendabort(void)
 	doflush();
     }
     if (autosynch) {
-	dosynch(NULL);
+	dosynch(NULL, NULL);
     }
 }
 
@@ -2372,7 +2372,7 @@ sendsusp(void)
 	doflush();
     }
     if (autosynch) {
-	dosynch(NULL);
+	dosynch(NULL, NULL);
     }
 }
 

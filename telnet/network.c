@@ -95,7 +95,7 @@ stilloob(void)
 
     if (value < 0) {
 	perror("select");
-	(void) quit();
+	(void) quit(0, NULL);
 	/* NOTREACHED */
     }
     if (FD_ISSET(net, &excepts)) {

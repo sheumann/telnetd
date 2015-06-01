@@ -253,7 +253,7 @@ extern void
     optionstatus(void),
     printoption(const char *, int, int),
     printsub(char, unsigned char *, int),
-    quit(void),
+    quit(int argc __unused, char **argv __unused),
     sendabort(void),
     sendbrk(void),
     sendeof(void),
@@ -295,7 +295,7 @@ extern void
 extern void
     slc_init(void),
     slcstate(void),
-    slc_mode_export(void),
+    slc_mode_export(int val __unused),
     slc_mode_import(int),
     slc_import(int),
     slc_export(void),
@@ -335,8 +335,8 @@ extern unsigned char
     *env_getvalue(const unsigned char *);
 
 extern int
-    get_status(char *),
-    dosynch(char *);
+    get_status(char *, char *),
+    dosynch(char *, char *);
 
 extern cc_t
     *tcval(int);
