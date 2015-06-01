@@ -8,9 +8,14 @@ LIBS = -l/usr/lib/libtermcap.204 -l/usr/lib/libnetdb
 
 CFLAGS = -i -w
 
+TELNET_A_SPECIFIC = $(TELNET_SPECIFIC) -STELNET_A__
+TELNET_B_SPECIFIC = $(TELNET_SPECIFIC) -STELNET_B__
+TELNETD_SPECIFIC += -STELNETD___
+
 $(OBJS): $(HEADERS)
 %.o: %.c
 	$(CC) $(INCLUDES) \
-		$(!eq,$(TELNET_SRCS:s/$<//),$(TELNET_SRCS) $(TELNET_SPECIFIC)) \
+		$(!eq,$(TELNET_SRCS_A:s/$<//),$(TELNET_SRCS_A) $(TELNET_A_SPECIFIC)) \
+		$(!eq,$(TELNET_SRCS_B:s/$<//),$(TELNET_SRCS_B) $(TELNET_B_SPECIFIC)) \
 		$(!eq,$(TELNETD_SRCS:s/$<//),$(TELNETD_SRCS) $(TELNETD_SPECIFIC)) \
 		$(CFLAGS) -c $< -o $@

@@ -2,17 +2,19 @@ LIBTELNET_SRCS = \
   libtelnet/getaddrinfo.c \
   libtelnet/strlcpy.c
 
-TELNET_SRCS = \
+TELNET_SRCS_A = \
   libtelnet/genget.c \
   libtelnet/inet_ntop.c \
   telnet/commands.c \
   telnet/main.c \
   telnet/network.c \
   telnet/ring.c \
-  telnet/sys_bsd.c \
+  telnet/sys_bsd.c
+TELNET_SRCS_B = \
   telnet/telnet.c \
   telnet/terminal.c \
   telnet/utilities.c
+TELNET_SRCS = $(TELNET_SRCS_A) $(TELNET_SRCS_B)
 
 TELNETD_SRCS = \
   libtelnet/getent.c \
