@@ -12,7 +12,8 @@ LIBTELNET_SRCS = \
   libtelnet/rsaencpwd.c \
   libtelnet/sra.c \
   libtelnet/getaddrinfo.c \
-  libtelnet/strlcpy.c
+  libtelnet/strlcpy.c \
+  libtelnet/vasprintf.c
 # libtelnet/pk.c 
 
 TELNET_SRCS = \

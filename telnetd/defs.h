@@ -98,6 +98,7 @@
 #endif
 #ifdef __GNO__
 # include "libtelnet/strlcpy.h"
+# include "libtelnet/vasprintf.h"
 #endif
 
 #ifndef	USE_TERMIO
