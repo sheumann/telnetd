@@ -907,10 +907,12 @@ cleanopen(char *li)
 	 * Make sure that other people can't open the
 	 * slave side of the connection.
 	 */
+#ifndef __GNO__
 	(void) chown(li, 0, 0);
 	(void) chmod(li, 0600);
 
 	(void) revoke(li);
+#endif
 
 	t = open(line, O_RDWR|O_NOCTTY);
 

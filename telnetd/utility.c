@@ -420,7 +420,9 @@ putf(char *cp, char *where)
 {
 	char *slash;
 	time_t t;
+#ifndef __GNO__
 	char db[100];
+#endif
 #ifdef __FreeBSD__
 	static struct utsname kerninfo;
 
@@ -463,8 +465,12 @@ putf(char *cp, char *where)
 			setlocale(LC_TIME, "");
 #endif
 			(void)time(&t);
+#ifndef __GNO__
 			(void)strftime(db, sizeof(db), fmtstr, localtime(&t));
 			putstr(db);
+#else
+			putstr(ctime(&t));
+#endif
 			break;
 
 #ifdef __FreeBSD__

@@ -718,7 +718,7 @@ doit(struct sockaddr *who_)
 				host = inet_ntoa(who->sin_addr);
 				break;
 			}
-			if (!bcmp(hp->h_addr_list[0], (caddr_t)&who->sin_addr,
+			if (!memcmp(hp->h_addr_list[0], (caddr_t)&who->sin_addr,
 			    sizeof(who->sin_addr))) {
 				host = hp->h_name;
 				break;          /* OK! */
