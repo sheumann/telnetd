@@ -375,7 +375,7 @@ main(int argc, char *argv[])
 		err(1, "accept");
 	    (void) setsockopt(ns, SOL_SOCKET, SO_DEBUG,
 				(char *)&on, sizeof(on));
-	    (void) dup2(ns, 0);
+	    (void) dup2(ns, STDIN_FILENO);
 	    (void) close(ns);
 	    (void) close(s);
 #ifdef convex
@@ -389,12 +389,12 @@ main(int argc, char *argv[])
 
 	openlog("telnetd", LOG_PID | LOG_ODELAY, LOG_DAEMON);
 	fromlen = sizeof (from);
-	if (getpeername(0, (struct sockaddr *)&from, &fromlen) < 0) {
+	if (getpeername(STDIN_FILENO, (struct sockaddr *)&from, &fromlen) < 0) {
 		warn("getpeername");
 		_exit(1);
 	}
 	if (keepalive &&
-	    setsockopt(0, SOL_SOCKET, SO_KEEPALIVE,
+	    setsockopt(STDIN_FILENO, SOL_SOCKET, SO_KEEPALIVE,
 			(char *)&on, sizeof (on)) < 0) {
 		syslog(LOG_WARNING, "setsockopt (SO_KEEPALIVE): %m");
 	}
@@ -409,13 +409,13 @@ main(int argc, char *argv[])
 		if (tos < 0)
 			tos = 020;	/* Low Delay bit */
 		if (tos
-		   && (setsockopt(0, IPPROTO_IP, IP_TOS,
+		   && (setsockopt(STDIN_FILENO, IPPROTO_IP, IP_TOS,
 				  (char *)&tos, sizeof(tos)) < 0)
 		   && (errno != ENOPROTOOPT) )
 			syslog(LOG_WARNING, "setsockopt (IP_TOS): %m");
 	}
 #endif	/* defined(IPPROTO_IP) && defined(IP_TOS) */
-	net = 0;
+	net = STDIN_FILENO;
 	doit((struct sockaddr *)&from);
 	/* NOTREACHED */
 	return(0);
