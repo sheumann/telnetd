@@ -44,9 +44,10 @@ vasprintf(char **strp, const char *fmt, va_list ap)
 {
 	va_list aq;
 	int ret;
+	char c;
 
 	va_copy(aq, ap);
-	ret = vsnprintf(NULL, 0, fmt, ap);
+	ret = vsnprintf(&c, 1, fmt, ap);
 	/* va_end(ap); -- Don't do this on ORCA/C; it messes up the stack */
 	if ((*strp = malloc(ret + 1)) == NULL)
 		return (-1);
