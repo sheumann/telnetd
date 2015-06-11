@@ -874,7 +874,7 @@ getptyslave(void)
 	set_termbuf();
 	if (login_tty(t) == -1)
 		fatalperror(net, "login_tty");
-	if (net > 2)
+	if (net > STDERR_FILENO)
 		(void) close(net);
 #ifdef	AUTHENTICATION
 #if	defined(NO_LOGIN_F) && defined(LOGIN_R)
@@ -883,7 +883,7 @@ getptyslave(void)
 	 * protocol for /bin/login, if the authentication works.
 	 */
 #else
-	if (pty > 2) {
+	if (pty > STDERR_FILENO) {
 		(void) close(pty);
 		pty = -1;
 	}
@@ -1084,7 +1084,7 @@ start_login(char *host undef1, int autologin undef1, char *name undef1)
 		 *	local-user\0remote-user\0term/speed\0
 		 */
 
-		if (pty > 2) {
+		if (pty > STDERR_FILENO) {
 			char *cp;
 			char speed[128];
 			int isecho, israw, xpty, len;
@@ -1107,7 +1107,7 @@ start_login(char *host undef1, int autologin undef1, char *name undef1)
 			argv = addarg(argv, LOGIN_HOST);
 
 			xpty = pty;
-			pty = 0;
+			pty = STDIN_FILENO;
 			init_termbuf();
 			isecho = tty_isecho();
 			israw = tty_israw();
@@ -1161,7 +1161,7 @@ start_login(char *host undef1, int autologin undef1, char *name undef1)
 	}
 #ifdef	AUTHENTICATION
 #if	defined(NO_LOGIN_F) && defined(LOGIN_R)
-	if (pty > 2)
+	if (pty > STDERR_FILENO)
 		close(pty);
 #endif
 #endif /* AUTHENTICATION */
