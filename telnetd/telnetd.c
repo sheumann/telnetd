@@ -151,6 +151,10 @@ main(int argc, char *argv[])
 #ifdef	ENCRYPTION
 	nclearto = 0;
 #endif	/* ENCRYPTION */
+    
+#ifdef __GNO__
+    environInit();
+#endif
 
 	/*
 	 * This initialization causes linemode to default to a configuration

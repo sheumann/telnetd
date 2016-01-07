@@ -928,6 +928,9 @@ cleanopen(char *li)
 static void 
 slaveproc(char *host, int autologin, char *autoname)
 {
+#ifdef __GNO__
+    environPush();
+#endif
 	getptyslave();
 	start_login(host, autologin, autoname);
 	/*NOTREACHED*/
