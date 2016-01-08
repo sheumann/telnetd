@@ -39,7 +39,11 @@
 # include <paths.h>
 
 # ifndef _PATH_LOGIN
-#  define	_PATH_LOGIN	"/usr/bin/login"
+#  ifdef __GNO__
+#   define	_PATH_LOGIN	"/usr/sbin/login"
+#  else
+#   define	_PATH_LOGIN	"/usr/bin/login"
+#  endif
 # endif
 
 #else
