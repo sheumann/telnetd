@@ -415,7 +415,7 @@ main(int argc, char *argv[])
 		if (tos
 		   && (setsockopt(STDIN_FILENO, IPPROTO_IP, IP_TOS,
 				  (char *)&tos, sizeof(tos)) < 0)
-		   && (errno != ENOPROTOOPT) )
+		   && (errno != ENOPROTOOPT) && (errno != EINVAL) )
 			syslog(LOG_WARNING, "setsockopt (IP_TOS): %m");
 	}
 #endif	/* defined(IPPROTO_IP) && defined(IP_TOS) */
