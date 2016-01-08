@@ -871,10 +871,12 @@ telnet(int f, int p, char *host)
 	if (my_state_is_wont(TELOPT_ECHO))
 		send_will(TELOPT_ECHO, 1);
 
+#ifndef __GNO__
 	/*
 	 * Turn on packet mode
 	 */
 	(void) ioctl(p, TIOCPKT, (char *)&on);
+#endif
 
 #if	defined(LINEMODE) && defined(KLUDGELINEMODE)
 	/*
@@ -1111,6 +1113,7 @@ telnet(int f, int p, char *host)
 			} else {
 				if (pcc <= 0)
 					break;
+#ifndef __GNO__
 #ifdef	LINEMODE
 				/*
 				 * If ioctl from pty, pass it through net
@@ -1156,6 +1159,9 @@ telnet(int f, int p, char *host)
 				}
 				pcc--;
 				ptyip = ptyibuf+1;
+#else /* __GNO__ */
+				ptyip = ptyibuf;
+#endif
 			}
 		}
 
