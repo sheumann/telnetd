@@ -71,4 +71,4 @@ telnetd/telnetd: $(TELNETD_OBJS) $(LIBTELNET_OBJS)
 
 .PHONY: clean
 clean:
-	$(RM) $(OBJS) telnet/telnet telnetd/telnetd
+	$(RM) $(OBJS) $(OBJS:.o=.root) telnet/telnet telnetd/telnetd
