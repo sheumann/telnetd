@@ -6,7 +6,7 @@
 # ftp://ftp.gno.org/pub/apple2/gs.specific/gno/base/v204/gnodisk1.sdk
 LIBS = -l/usr/lib/libtermcap.204 -l/usr/lib/libnetdb -l/usr/lib/libutil
 
-CFLAGS = -i -w
+CFLAGS = -i -w -O14
 
 TELNET_A_SPECIFIC = $(TELNET_SPECIFIC) -STELNET_A__
 TELNET_B_SPECIFIC = $(TELNET_SPECIFIC) -STELNET_B__
