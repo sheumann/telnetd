@@ -43,6 +43,7 @@ static const char sccsid[] = "@(#)telnetd.c	8.4 (Berkeley) 5/30/95";
 #include "pathnames.h"
 
 #ifdef __GNO__
+#include <gno/gno.h>
 #include "libtelnet/getaddrinfo.h"
 /* GNO doesn't have struct sockaddr_storage; just use "struct sockaddr" 
  * (which is really struct osockaddr). */
@@ -64,6 +65,10 @@ int	auth_level = 0;
 #include "libtelnet/encrypt.h"
 #endif
 #include "libtelnet/misc.h"
+
+#ifdef __ORCAC__
+#pragma stacksize 1536
+#endif
 
 char	remote_hostname[MAXHOSTNAMELEN];
 size_t	utmp_len = sizeof(remote_hostname) - 1;
@@ -145,16 +150,26 @@ main(int argc, char *argv[])
 #endif
 	char *ep;
 
+
+#ifdef __GNO__
+	if (getenv("TELNETD_STACKCHECK") != NULL)
+		_reportStack();
+
+	/* Make sure our environment is isolated from the parent process's */
+	if (environPush() == 0)
+		atexit(environPop);
+	else
+		exit(1);
+	environInit();
+#endif
+
 	pfrontp = pbackp = ptyobuf;
 	netip = netibuf;
 	nfrontp = nbackp = netobuf;
 #ifdef	ENCRYPTION
 	nclearto = 0;
 #endif	/* ENCRYPTION */
-    
-#ifdef __GNO__
-    environInit();
-#endif
+
 
 	/*
 	 * This initialization causes linemode to default to a configuration
@@ -579,7 +594,7 @@ getterminaltype(char *name undef2)
 	    ttloop();
     }
     if (his_state_is_will(TELOPT_TTYPE)) {
-	char first[256], last[256];
+	static char first[256], last[256];
 
 	while (sequenceIs(ttypesubopt, baseline))
 	    ttloop();
@@ -647,8 +662,6 @@ _gettermname(void)
 int
 terminaltypeok(char *s)
 {
-    char buf[1024];
-
     if (terminaltype == NULL)
 	return(1);
 
@@ -768,8 +781,8 @@ telnet(int f, int p, char *host)
 {
 	int on = 1;
 #define	TABBUFSIZ	512
-	char	defent[TABBUFSIZ];
-	char	defstrs[TABBUFSIZ];
+	char	*defent = buf;
+	char	*defstrs = buf + TABBUFSIZ;
 #undef	TABBUFSIZ
 	char *HE;
 	char *HN;

@@ -326,8 +326,6 @@ netflush(void)
 void
 fatal(int f, const char *msg)
 {
-	char buf[BUFSIZ];
-
 	(void) snprintf(buf, sizeof(buf), "telnetd: %s.\r\n", msg);
 #ifdef	ENCRYPTION
 	if (encrypt_output) {
@@ -347,7 +345,7 @@ fatal(int f, const char *msg)
 void
 fatalperror(int f, const char *msg)
 {
-	char buf[BUFSIZ];
+	static char buf[BUFSIZ];
 
 	(void) snprintf(buf, sizeof(buf), "%s: %s", msg, strerror(errno));
 	fatal(f, buf);
@@ -722,7 +720,7 @@ printsub(char direction, unsigned char *pointer, int length)
 		    break;
 		}
 		{
-		    char tbuf[32];
+		    static char tbuf[32];
 		    sprintf(tbuf, "%s%s%s%s%s",
 			pointer[2]&MODE_EDIT ? "|EDIT" : "",
 			pointer[2]&MODE_TRAPSIG ? "|TRAPSIG" : "",
@@ -1057,7 +1055,7 @@ void
 printdata(const char *tag, char *ptr, int cnt)
 {
 	int i;
-	char xbuf[30];
+	static char xbuf[30];
 
 	while (cnt) {
 		/* flush net output buffer if no room for new data) */

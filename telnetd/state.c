@@ -1495,7 +1495,7 @@ doclientstat(void)
 void
 send_status(void)
 {
-	unsigned char statusbuf[256];
+	static unsigned char statusbuf[256];
 	unsigned char *ncp;
 	unsigned char i;
 

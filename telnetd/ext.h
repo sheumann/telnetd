@@ -80,6 +80,9 @@ extern int	pty, net;
 extern char	line[32];
 extern int	SYNCHing;		/* we are in TELNET SYNCH mode */
 
+/* Buffer for miscellaneous uses in various functions */
+extern char     buf[BUFSIZ > 1024 ? BUFSIZ : 1024];
+
 extern void
 	_termstat(void),
 	add_slc(char, char, cc_t),

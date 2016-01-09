@@ -1288,5 +1288,5 @@ cleanup(int sig __unused)
 {
 
 	(void) shutdown(net, SHUT_RDWR);
-	_exit(1);
+	exit(1);
 }
