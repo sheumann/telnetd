@@ -375,6 +375,24 @@ spcset(int func, cc_t *valp, cc_t **valpp)
 }
 #endif	/* USE_TERMIO */
 
+static int slave_opened = 0;
+
+#ifdef __GNO__
+/*
+ * open_slave_at_exit()
+ *
+ * Called at exit.  Works around a GNO kernel bug by ensuring that
+ * the slave side of the pty is opened before the master is closed.
+ */
+
+static void
+open_slave_at_exit(void)
+{
+	if (!slave_opened)
+		open(line, O_RDWR);
+}
+#endif /* __GNO__ */
+
 /*
  * getpty()
  *
@@ -407,6 +425,9 @@ getpty(int *ptynum __unused)
 	if (strlcpy(line, pn, sizeof line) >= sizeof line)
 		return (-1);
 
+#ifdef __GNO__
+	atexit(open_slave_at_exit);
+#endif
 	return (p);
 }
 
@@ -924,6 +945,7 @@ cleanopen(char *li)
 	if (t < 0)
 		return(-1);
 
+	slave_opened = 1;
 	return(t);
 }
 
