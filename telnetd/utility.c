@@ -339,7 +339,7 @@ fatal(int f, const char *msg)
 #endif	/* ENCRYPTION */
 	(void) write(f, buf, (int)strlen(buf));
 	sleep(1);	/*XXX*/
-	exit(1);
+	safe_exit(1);
 }
 
 void

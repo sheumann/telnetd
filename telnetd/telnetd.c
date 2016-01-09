@@ -156,12 +156,13 @@ main(int argc, char *argv[])
 		_reportStack();
 
 	/* Make sure our environment is isolated from the parent process's */
-	if (environPush() == 0)
+	if (environPush() == 0 && environInit() == 0)
 		atexit(environPop);
 	else
 		exit(1);
-	environInit();
 #endif
+
+	parent_pid = getpid();
 
 	pfrontp = pbackp = ptyobuf;
 	netip = netibuf;

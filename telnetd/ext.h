@@ -83,6 +83,8 @@ extern int	SYNCHing;		/* we are in TELNET SYNCH mode */
 /* Buffer for miscellaneous uses in various functions */
 extern char     buf[BUFSIZ > 1024 ? BUFSIZ : 1024];
 
+extern int      parent_pid;            /* pid of parent (server) process */
+
 extern void
 	_termstat(void),
 	add_slc(char, char, cc_t),
@@ -166,6 +168,7 @@ extern int
 	tty_linemode(void);
 
 extern void
+	safe_exit(int),
 	tty_rspeed(int),
 	tty_setecho(int),
 	tty_setedit(int),
@@ -194,7 +197,7 @@ extern char	*nclearto;
  */
 
 extern struct {
-    int
+    long
 	system,			/* what the current time is */
 	echotoggle,		/* last time user entered echo character */
 	modenegotiated,		/* last time operating mode negotiated */

@@ -45,8 +45,13 @@ static const char sccsid[] = "@(#)sys_term.c	8.4+1 (Berkeley) 5/30/95";
 #endif
 #include <stdlib.h>
 
+#ifdef __GNO__
+#include <gsos.h>
+#endif
+
 #include "telnetd.h"
 #include "pathnames.h"
+#include "libtelnet/vfork.and.run.h"
 
 #ifdef	AUTHENTICATION
 #include "libtelnet/auth.h"
@@ -922,22 +927,20 @@ cleanopen(char *li)
 	return(t);
 }
 
-#ifdef __ORCAC__
-# pragma databank 1
-#endif
+struct slaveargs {
+	char *host;
+	int autologin;
+	char *autoname;
+};
+
 static void 
-slaveproc(char *host, int autologin, char *autoname)
+slaveproc(void *slaveargs)
 {
-#ifdef __GNO__
-    environPush();
-#endif
+	struct slaveargs *args = slaveargs;
 	getptyslave();
-	start_login(host, autologin, autoname);
+	start_login(args->host, args->autologin, args->autoname);
 	/*NOTREACHED*/
 }
-#ifdef __ORCAC__
-# pragma databank 0
-#endif
 
 /*
  * startslave(host)
@@ -951,6 +954,7 @@ void
 startslave(char *host, int autologin, char *autoname)
 {
 	int i;
+	struct slaveargs slaveargs = {host, autologin, autoname};
 
 #ifdef	AUTHENTICATION
 	if (!autoname || !autoname[0])
@@ -962,25 +966,9 @@ startslave(char *host, int autologin, char *autoname)
 	}
 #endif
 
-#ifndef __GNO__
-	i = fork();
-#else
-	i = fork2(slaveproc, 1024, 0, "telnetd pty slave proc", 
-    		   (sizeof(host) + sizeof(autologin) + sizeof(autoname))/2, 
-    		   host, autologin, autoname);
-#endif
+	i = vfork_and_run(slaveproc, &slaveargs);
 	if (i < 0)
 		fatalperror(net, "fork");
-	if (i) {
-#ifdef __GNO__
-		do {
-			errno = 0;
-			(void)wait(NULL);
-		} while (errno == EINTR);
-#endif
-	} else {
-		slaveproc(host, autologin, autoname);
-	}
 }
 
 void
@@ -1276,6 +1264,47 @@ scrub_env(void)
 	environ = new_environ;
 }
 
+
+#ifdef __GNO__
+static QuitRecGS quitRec = {0, NULL, 0};
+#endif
+
+/*
+ * safe_exit()
+ *
+ * Exit in a way that's safe for either the forked child or
+ * the parent.
+ */
+void
+safe_exit(int status)
+{
+	if (getpid() == parent_pid) {
+		exit(status);
+	} else {
+#ifndef __GNO__
+		_exit(status);
+#else
+		/* _exit (contrary to its documentation) performs clean-up 
+		 * that's inappropriate for a forked child process (this 
+		 * usually results in corruption of the memory allocator 
+		 * state, and maybe other problems), so we define our own 
+		 * function without this problem.  We call QuitGS in assembly
+		 * so we can push the return value on the stack.
+		 */
+		while (1) {
+			asm {
+				lda status
+				pha
+				jsl 0xE100A8
+				dcw 0x2029	/* QuitGS */
+				dcl quitRec;
+				pla
+			}
+		}
+#endif
+	}
+}
+
 /*
  * cleanup()
  *
@@ -1288,5 +1317,5 @@ cleanup(int sig __unused)
 {
 
 	(void) shutdown(net, SHUT_RDWR);
-	exit(1);
+	safe_exit(1);
 }
