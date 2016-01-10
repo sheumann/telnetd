@@ -21,6 +21,7 @@ TELNETD_SRCS = \
   libtelnet/posix_openpt.c \
   libtelnet/vasprintf.c \
   libtelnet/vfork.and.run.c \
+  libtelnet/cleanenv.c \
   telnetd/global.c \
   telnetd/slc.c \
   telnetd/state.c \

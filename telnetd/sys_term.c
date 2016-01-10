@@ -52,6 +52,7 @@ static const char sccsid[] = "@(#)sys_term.c	8.4+1 (Berkeley) 5/30/95";
 #include "telnetd.h"
 #include "pathnames.h"
 #include "libtelnet/vfork.and.run.h"
+#include "libtelnet/cleanenv.h"
 
 #ifdef	AUTHENTICATION
 #include "libtelnet/auth.h"
@@ -59,9 +60,6 @@ static const char sccsid[] = "@(#)sys_term.c	8.4+1 (Berkeley) 5/30/95";
 
 int cleanopen(char *);
 void scrub_env(void);
-
-char	*envinit[3];
-extern char **environ;
 
 #define SCPYN(a, b)	(void) strncpy(a, b, sizeof(a))
 #define SCMPN(a, b)	strncmp(a, b, sizeof(a))
@@ -996,13 +994,10 @@ startslave(char *host, int autologin, char *autoname)
 void
 init_env(void)
 {
-	char **envp;
+	static const char *retain[] = {"TZ", NULL};
 
-	envp = envinit;
-	if ((*envp = getenv("TZ")))
-		*envp++ -= 3;
-	*envp = 0;
-	environ = envinit;
+	if (cleanenv(retain) != 0)
+		fatalperror(net, "Couldn't initialize environment");
 }
 
 
@@ -1232,58 +1227,19 @@ addarg(char **argv, const char *val)
 void
 scrub_env(void)
 {
-	static const char *rej[] = {
-		"TERMCAP=/",
-		NULL
-	};
-
 	static const char *acc[] = {
-		"XAUTH=", "XAUTHORITY=", "DISPLAY=",
-		"TERM=",
-		"EDITOR=",
-		"PAGER=",
-		"LOGNAME=",
-		"POSIXLY_CORRECT=",
-		"PRINTER=",
+		"XAUTH", "XAUTHORITY", "DISPLAY",
+		"TERM",
+		"EDITOR",
+		"PAGER",
+		"LOGNAME",
+		"POSIXLY_CORRECT",
+		"PRINTER",
 		NULL
 	};
 
-	char **cpp, **cpp2;
-	const char **p;
-	char ** new_environ;
-	size_t count;
-
-	/* Allocate space for scrubbed environment. */
-	for (count = 1, cpp = environ; *cpp; count++, cpp++)
-		continue;
-	if ((new_environ = malloc(count * sizeof(char *))) == NULL) {
-		environ = NULL;
-		return;
-	}
-
- 	for (cpp2 = new_environ, cpp = environ; *cpp; cpp++) {
-		int reject_it = 0;
-
-		for(p = rej; *p; p++)
-			if(strncmp(*cpp, *p, strlen(*p)) == 0) {
-				reject_it = 1;
-				break;
-			}
-		if (reject_it)
-			continue;
-
-		for(p = acc; *p; p++)
-			if(strncmp(*cpp, *p, strlen(*p)) == 0)
-				break;
-		if(*p != NULL) {
-			if ((*cpp2++ = strdup(*cpp)) == NULL) {
-				environ = new_environ;
-				return;
-			}
-		}
- 	}
-	*cpp2 = NULL;
-	environ = new_environ;
+	if (cleanenv(acc) != 0)
+		fatalperror(net, "Couldn't initialize environment");
 }
 
 
